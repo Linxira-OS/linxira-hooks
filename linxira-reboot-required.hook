@@ -1,0 +1,18 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = linux-cachyos*
+Target = linux
+Target = linux-lts
+Target = nvidia
+Target = nvidia-dkms
+Target = nvidia-utils
+Target = mesa
+Target = systemd
+Target = mkinitcpio
+
+[Action]
+Description = Check if user should be informed about rebooting after certain system package upgrades.
+When = PostTransaction
+NeedsTargets
+Exec = /usr/share/libalpm/scripts/linxira-reboot-required

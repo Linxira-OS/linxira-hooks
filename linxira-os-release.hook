@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = filesystem
+
+[Action]
+Description = Applying Linxira OS branding...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/linxira-branding os-release
