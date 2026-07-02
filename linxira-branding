@@ -23,6 +23,7 @@ update_os_release() {
 }
 update_issues() {
     sed -i 's|CachyOS|Linxira OS|g' /etc/issue /usr/share/factory/etc/issue 2>/dev/null || true
+    sed -i 's|cachyos|linxira|g' /etc/issue /usr/share/factory/etc/issue 2>/dev/null || true
 }
 case "$1" in
     os-release) update_os_release ;;
