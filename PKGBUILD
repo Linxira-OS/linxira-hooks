@@ -8,9 +8,6 @@ arch=('any')
 url="https://github.com/Linxira-OS/linxira-hooks"
 license=('GPL-3.0-or-later')
 depends=('bash')
-provides=('cachyos-hooks')
-conflicts=('cachyos-hooks')
-replaces=('cachyos-hooks')
 
 source=("$pkgname-$pkgver.tar.gz")
 sha256sums=('SKIP')
