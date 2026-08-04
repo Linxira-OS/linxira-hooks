@@ -1,0 +1,16 @@
+name: CI
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash -n hooks/*.hook 2>/dev/null || true
+      - run: |
+          for f in hooks/*.hook; do bash -n "$f"; done
+          echo "hooks syntax verified"
