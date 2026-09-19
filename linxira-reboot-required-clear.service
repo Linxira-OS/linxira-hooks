@@ -1,0 +1,12 @@
+[Unit]
+Description=Clear the Linxira reboot-required marker left over from the previous boot
+Documentation=https://github.com/Linxira-OS/linxira-hooks
+ConditionPathExists=/var/lib/linxira/reboot-required
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rm -f /var/lib/linxira/reboot-required /var/lib/linxira/reboot-required.pkgs
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

@@ -1,10 +1,32 @@
 #!/usr/bin/env bash
 kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
+MARKER_DIR="${LINXIRA_REBOOT_MARKER_DIR:-/var/lib/linxira}"
+
+# 落盘标记：README/治理口径的契约——welcome 等只读工具靠
+# /var/lib/linxira/reboot-required 判断"本次开机后升级过核心包需要重启"。
+# 开机清理由 linxira-reboot-required-clear.service 负责。
+_mark() {
+    local target=$1 pkgs
+    mkdir -p -- "$MARKER_DIR" 2>/dev/null || return 0
+    [[ -d $MARKER_DIR && ! -L $MARKER_DIR ]] || return 0
+    printf '%s\n' "*** Reboot required (Linxira OS): core system package(s) upgraded ***" \
+        > "$MARKER_DIR/reboot-required" 2>/dev/null || return 0
+    if [[ -f $MARKER_DIR/reboot-required.pkgs ]]; then
+        pkgs=$(cat -- "$MARKER_DIR/reboot-required.pkgs")
+    else
+        pkgs=""
+    fi
+    printf '%s\n' "$pkgs" "$target" | grep -v '^[[:space:]]*$' | sort -u \
+        > "$MARKER_DIR/reboot-required.pkgs" 2>/dev/null || :
+}
+
 _notify() {
+    local target=$1
     local header="Linxira OS Update"
     local title="Reboot recommended!"
     local msg="Reboot is recommended due to the upgrade of core system package(s)."
+    _mark "$target"
     echo "==> INFO: $msg" >&2
     for user in $(users | sed 's| |\n|g' | sort | uniq); do
         busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
@@ -18,19 +40,19 @@ _notify() {
 
 while read -r target; do
     case "$target" in
-        "$kernelname") _notify;;
+        "$kernelname") _notify "$target";;
         nvidia)
-            [ "$kernelname" = "linux" ] && _notify;;
+            [ "$kernelname" = "linux" ] && _notify "$target";;
         nvidia-lts)
-            [ "$kernelname" = "linux-lts" ] && _notify;;
+            [ "$kernelname" = "linux-lts" ] && _notify "$target";;
         linux-cachyos-nvidia*)
-            [[ "$kernelname" = linux-cachyos* ]] && _notify;;
+            [[ "$kernelname" = linux-cachyos* ]] && _notify "$target";;
         btrfs-progs)
-            [ -n "$(mount -t btrfs)" ] && _notify || : ;;
+            [ -n "$(mount -t btrfs)" ] && _notify "$target" || : ;;
         xfsprogs)
-            [ -n "$(mount -t xfs)" ] && _notify || : ;;
+            [ -n "$(mount -t xfs)" ] && _notify "$target" || : ;;
         e2fsprogs)
-            [ -n "$(mount -t ext4)" ] && _notify || : ;;
-        *) _notify ;;
+            [ -n "$(mount -t ext4)" ] && _notify "$target" || : ;;
+        *) _notify "$target" ;;
     esac
 done
