@@ -14,3 +14,4 @@ jobs:
       - run: |
           for f in *.hook; do bash -n "$f"; done
           echo "hooks syntax verified"
+      - run: ./check-branding.sh

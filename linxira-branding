@@ -11,11 +11,11 @@ update_os_release() {
         -e 's|^PRETTY_NAME=.*$|PRETTY_NAME="Linxira OS"|' \
         -e 's|^ID=.*$|ID=arch|' \
         -e 's|^ID_LIKE=.*$|ID_LIKE=arch|' \
-        -e 's|^ANSI_COLOR=.*$|ANSI_COLOR="38;2;0;150;199"|' \
-        -e 's|^HOME_URL=.*$|HOME_URL="https://linxira.org"|' \
-        -e 's|^DOCUMENTATION_URL=.*$|DOCUMENTATION_URL="https://wiki.linxira.org"|' \
+        -e 's|^ANSI_COLOR=.*$|ANSI_COLOR="38;2;20;184;166"|' \
+        -e 's|^HOME_URL=.*$|HOME_URL="https://github.com/Linxira-OS"|' \
+        -e 's|^DOCUMENTATION_URL=.*$|DOCUMENTATION_URL="https://linxira-os.github.io"|' \
         -e 's|^SUPPORT_URL=.*$|SUPPORT_URL="https://github.com/Linxira-OS"|' \
-        -e 's|^BUG_REPORT_URL=.*$|BUG_REPORT_URL="https://github.com/Linxira-OS/linxira-iso/issues"|' \
+        -e 's|^BUG_REPORT_URL=.*$|BUG_REPORT_URL="https://github.com/Linxira-OS/linxira-os/issues"|' \
         -e 's|^LOGO=.*$|LOGO=linxira|'
     if ! grep -q "^ID_LIKE=" "$os_release" && grep -q "^ID=" "$os_release"; then
         sed -i "$os_release" -e '/^ID=/a \ID_LIKE=arch'
