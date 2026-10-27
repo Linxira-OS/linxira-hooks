@@ -5,7 +5,17 @@ update_lsb_release() {
         -e 's|^DISTRIB_DESCRIPTION=.*$|DISTRIB_DESCRIPTION="Linxira OS"|'
 }
 update_os_release() {
-    local os_release="/etc/os-release"
+    # 操作真实文件: 对 /etc/os-release 符号链接做 sed -i 会把链接替换成普通
+    # 文件, /usr/lib/os-release 仍是 Arch(实际故障)。
+    local os_release="/usr/lib/os-release"
+    local etc_release="/etc/os-release"
+    if [ -f "$etc_release" ] && [ ! -L "$etc_release" ]; then
+        [ -f "$os_release" ] || cp "$etc_release" "$os_release"
+        rm -f "$etc_release"
+    fi
+    if [ ! -e "$etc_release" ] && [ ! -L "$etc_release" ]; then
+        ln -s ../usr/lib/os-release "$etc_release"
+    fi
     sed -i "$os_release" \
         -e 's|^NAME=.*$|NAME="Linxira OS"|' \
         -e 's|^PRETTY_NAME=.*$|PRETTY_NAME="Linxira OS"|' \
